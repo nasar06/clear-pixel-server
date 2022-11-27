@@ -44,6 +44,20 @@ function run() {
         const usersCollection = client.db('Clear-Pixel').collection('users')
 
 
+        // Verify Admin
+        const verifyAdmin = async(req, res, next)=>{
+            const decodedEmail = req.decoded.email
+            console.log('decoded email',decodedEmail)
+            const query = {email: decodedEmail}
+            const user = await usersCollection.findOne(query)
+            console.log(user)
+            if(user?.role !== 'admin'){
+                return res.status(403).send({message: 'forbidden access'})
+            }
+
+            next()
+        }
+
         //get all categories [home page]
         app.get('/categories', async (req, res) => {
             const query = {}
@@ -71,7 +85,7 @@ function run() {
             const email = req.query.email;
             const query = {email}
             const existingUser = await usersCollection.findOne(query)
-            if(existingUser.email === email){
+            if(existingUser?.email === email){
                 return res.status(401).send({massage: 'Already exist This user'})
             }
             const user = req.body;
@@ -141,8 +155,8 @@ function run() {
             res.send(result)
         })
 
-        //get all sellers and buyer [allSellers page][all buyers page]
-        app.get('/usersRole/:role', verifyJwt, async (req, res) => {
+        //get allSellers and allBuyer [allSellers page][all buyers page]
+        app.get('/usersRole/:role', verifyJwt,verifyAdmin, async (req, res) => {
             const role = req.params.role
             const query = { role: role }
             const result = await usersCollection.find(query).toArray()
