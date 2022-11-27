@@ -173,18 +173,21 @@ function run() {
             res.send(result)
         })
 
-        //sellerVerify
-        app.put('/user/:id', async (req, res) => {
-            const id = req.params.id
-            const filter = { _id: ObjectId(id) }
+        //sellerVerify [allSeller page]
+        app.put('/user', async (req, res) => {
+            const email = req.query.email
+            //filter1 userCollection & filter2 camerasCollections
+            const filter1 = { email }
+            const filter2 = { sellerEmail: email}
             const options = { upsert: true }
             const updatedDoc = {
                 $set: {
-                    status: 'verify'
+                    status: 'verified'
                 }
             }
-            const result = await usersCollection.updateOne(filter, updatedDoc, options)
-            res.send(result)
+            const result1 = await usersCollection.updateOne(filter1, updatedDoc, options)
+            const result2 = await camerasCollection.updateMany(filter2, updatedDoc, options)
+            res.send({result1, result2})
         })
 
         //JWT 
