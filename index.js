@@ -68,6 +68,12 @@ function run() {
 
         //post users [signUp]
         app.post('/users', async (req, res) => {
+            const email = req.query.email;
+            const query = {email}
+            const existingUser = await usersCollection.findOne(query)
+            if(existingUser.email === email){
+                return res.status(401).send({massage: 'Already exist This user'})
+            }
             const user = req.body;
             const result = await usersCollection.insertOne(user)
             res.send(result)
