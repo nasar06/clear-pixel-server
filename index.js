@@ -47,7 +47,6 @@ function run() {
         // Verify Admin
         const verifyAdmin = async(req, res, next)=>{
             const decodedEmail = req.decoded.email
-            console.log('decoded email',decodedEmail)
             const query = {email: decodedEmail}
             const user = await usersCollection.findOne(query)
             
@@ -181,8 +180,9 @@ function run() {
             const role = req.params.role
             const query = { role: role }
             const options = {
-                sort: {"time": -1}
-            }
+                sort: { 
+                    "time": -1 },
+              };
             const result = await usersCollection.find(query, options).toArray()
             res.send(result)
         })
@@ -231,7 +231,6 @@ function run() {
         //JWT 
         app.get('/jwt', async (req, res) => {
             const email = req.query.email
-            console.log(email)
             const query = { email }
             const user = await usersCollection.findOne(query)
 
