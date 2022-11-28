@@ -50,7 +50,7 @@ function run() {
             console.log('decoded email',decodedEmail)
             const query = {email: decodedEmail}
             const user = await usersCollection.findOne(query)
-            console.log(user)
+            
             if(user?.role !== 'admin'){
                 return res.status(403).send({message: 'forbidden access'})
             }
@@ -149,7 +149,6 @@ function run() {
         //get advertise product [myProduct page]
         app.get('/advertise/:av', async (req, res) => {
             const av = req.params.av
-            console.log(av)
             const query = { advertise: av }
             const result = await camerasCollection.find(query).toArray()
             res.send(result)
