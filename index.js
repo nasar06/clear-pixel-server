@@ -97,7 +97,10 @@ function run() {
         app.get('/myOrders', verifyJwt, async (req, res) => {
             const email = req.query.email
             const query = { userEmail: email }
-            const result = await OrdersCollection.find(query).toArray()
+            const options = {
+                sort: { "time": -1 }
+            }
+            const result = await OrdersCollection.find(query, options).toArray()
             res.send(result)
         })
 
@@ -114,7 +117,7 @@ function run() {
             const sellerEmail = req.body.sellerEmail;
             const filter = {email: sellerEmail}
             const seller = await usersCollection.findOne(filter)
-            
+
             if(seller?.status === 'verified'){
                 const product = {...req.body, status: 'verified'};
                 
@@ -132,7 +135,10 @@ function run() {
         app.get('/myProducts', async (req, res) => {
             const email = req.query.email
             const query = { sellerEmail: email }
-            const result = await camerasCollection.find(query).toArray()
+            const options = {
+                sort: { "time": -1 }
+            }
+            const result = await camerasCollection.find(query, options).toArray()
             res.send(result)
         })
 
@@ -155,6 +161,7 @@ function run() {
                 }
             }
             const result = await camerasCollection.updateOne(filter, updatedDoc, options)
+            
             res.send(result)
         })
 
@@ -162,7 +169,10 @@ function run() {
         app.get('/advertise/:av', async (req, res) => {
             const av = req.params.av
             const query = { advertise: av }
-            const result = await camerasCollection.find(query).toArray()
+            const options = {
+                sort: { "time": -1 },
+              };
+            const result = await camerasCollection.find(query, options).limit(3).toArray()
             res.send(result)
         })
 
