@@ -111,9 +111,21 @@ function run() {
 
         //post product [add product page]
         app.post('/addProduct', async (req, res) => {
-            const product = req.body;
-            const result = await camerasCollection.insertOne(product)
-            res.send(result)
+            const sellerEmail = req.body.sellerEmail;
+            const filter = {email: sellerEmail}
+            const seller = await usersCollection.findOne(filter)
+            
+            if(seller?.status === 'verified'){
+                const product = {...req.body, status: 'verified'};
+                
+                const result = await camerasCollection.insertOne(product)
+                res.send(result)
+            }
+            else{
+                const product = req.body
+                const result = await camerasCollection.insertOne(product)
+                res.send(result)
+            }
         })
 
         //get products by email [my products page]
