@@ -180,7 +180,10 @@ function run() {
         app.get('/usersRole/:role', verifyJwt,verifyAdmin, async (req, res) => {
             const role = req.params.role
             const query = { role: role }
-            const result = await usersCollection.find(query).toArray()
+            const options = {
+                sort: {"time": -1}
+            }
+            const result = await usersCollection.find(query, options).toArray()
             res.send(result)
         })
 
