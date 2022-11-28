@@ -211,6 +211,26 @@ function run() {
             res.send(result)
         })
 
+        //wishlist 
+        app.put('/wishList/:id', async(req, res)=>{
+            const id = req.params.id
+            const filter = {_id: ObjectId(id)}
+            const options = {upsert: true}
+            const updatedDoc = {
+                $set: {wishList: 'love'}
+            }
+            const result = await camerasCollection.updateOne(filter, updatedDoc, options)
+            res.send(result);
+        })
+
+        //get wishList product
+        app.get('/wishList/:wl', async(req, res)=>{
+            const value = req.params.wl
+            const query = {wishList: value}
+            const result = await camerasCollection.find(query).toArray()
+            res.send(result)
+        })
+
         //sellerVerify [allSeller page]
         app.put('/user', async (req, res) => {
             const email = req.query.email
